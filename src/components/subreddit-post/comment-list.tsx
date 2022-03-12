@@ -13,6 +13,7 @@ const CommentList = (props: Props) => {
     <FlatList
       data={comments}
       renderItem={({ item }) => <Comment comment={item} />}
+      initialNumToRender={10}
     />
   );
 };

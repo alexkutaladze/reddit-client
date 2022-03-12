@@ -11,6 +11,7 @@ const useSubredditPosts = (
     () => getSubredditPosts(sub, sortby),
     {
       refetchOnWindowFocus: true,
+      keepPreviousData: true,
     },
   );
 };
