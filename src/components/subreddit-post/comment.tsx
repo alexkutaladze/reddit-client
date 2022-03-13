@@ -1,6 +1,6 @@
 import { Dimensions, LayoutAnimation, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import { Box, Divider, HStack, Spacer, Text, useNativeBase } from 'native-base';
+import React, { useMemo, useState } from 'react';
+import { Box, Divider, HStack, Spacer, Text } from 'native-base';
 import RenderHTML from 'react-native-render-html';
 import { IComment } from '../../api/post/post.types';
 import { getPostAge } from '../../util/functions/post-age';
@@ -69,9 +69,10 @@ interface CommentBodyProps {
 
 const CommentBody = (props: CommentBodyProps) => {
   const { html } = props;
+  const source = { html };
   return (
     <RenderHTML
-      source={{ html: `${html}` }}
+      source={source}
       baseStyle={{ fontSize: 16, color: 'white' }}
       contentWidth={width}
     />

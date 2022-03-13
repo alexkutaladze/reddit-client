@@ -35,7 +35,7 @@ const SubredditPostHeader = (props: Props) => {
         </Text>
         <Icon name="happy-outline" color="white" size={15} />
         <Text pl={1} pr={2}>
-          {rate * 100}%
+          {Math.floor(rate * 100)}%
         </Text>
         <Icon name="time-outline" color="white" size={15} />
         <Text pl={1} pr={2}>
