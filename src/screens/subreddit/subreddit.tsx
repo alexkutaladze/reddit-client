@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useSubredditPosts } from '../../api/subreddit';
 import { Box, Center } from 'native-base';
 import Post from '../../components/subreddit/post';
@@ -14,10 +14,11 @@ import Animated, {
 const AnimatedFlatlist = Animated.createAnimatedComponent(FlatList);
 
 const Subreddit = (props: ScreenProps<'subreddit'>) => {
-  const { navigation } = props;
+  const { navigation, route } = props;
+  const { display_name } = route.params;
   const [sort, setSort] = useState('new');
   const { data, isLoading, isRefetching, refetch } = useSubredditPosts(
-    'programming',
+    display_name,
     sort,
   );
   const flatRef = useRef<FlatList<any>>();
@@ -28,9 +29,9 @@ const Subreddit = (props: ScreenProps<'subreddit'>) => {
     },
   });
 
-  useEffect(() => {
-    navigation.setOptions({ title: 'Programming' });
-  }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({ title: display_name });
+  }, [display_name, navigation]);
 
   if (isLoading) {
     return (
@@ -45,8 +46,10 @@ const Subreddit = (props: ScreenProps<'subreddit'>) => {
       <SortSegment setSort={setSort} />
       <AnimatedFlatlist
         onScroll={scrollHandler}
+        // @ts-ignore
         ref={flatRef}
         data={data?.data.children}
+        // @ts-ignore
         renderItem={({ item }) => <Post post={item} />}
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />

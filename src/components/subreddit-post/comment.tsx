@@ -50,7 +50,7 @@ const Comment = (props: Props) => {
             <Icon name="arrow-up" color="orange" />
             <Text pl={1}>{comment.data.score}</Text>
           </HStack>
-          <CommentBody html={comment.data.body_html} />
+          <Text fontSize={14}>{comment.data.body}</Text>
           <Divider mt={2} />
         </Box>
         {!collapsed &&

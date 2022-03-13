@@ -5,12 +5,11 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
   runOnJS,
-  useDerivedValue,
-  runOnUI,
 } from 'react-native-reanimated';
 import { Box } from 'native-base';
-import { LayoutAnimation } from 'react-native';
+import { Dimensions, LayoutAnimation } from 'react-native';
 
+const { width } = Dimensions.get('window');
 const AnimatedBox = Animated.createAnimatedComponent(Box);
 
 interface ISwipeProps {
@@ -22,10 +21,11 @@ interface ISwipeProps {
 interface Props {
   left?: Array<ISwipeProps>;
   right?: Array<ISwipeProps>;
+  minDistance?: number;
 }
 
 const SwipeableView: FC<Props> = props => {
-  const { children, left, right } = props;
+  const { children, left, right, minDistance = 0 } = props;
 
   const translateX = useSharedValue(0);
 
@@ -52,21 +52,21 @@ const SwipeableView: FC<Props> = props => {
     }
   };
 
-  const onEnd = () => {
-    swipeToShow?.action && swipeToShow.action();
-    translateX.value = withTiming(0, {}, () => {
-      setSwipeToShow(null);
-    });
+  const onEnd = (x: number) => {
+    swipeToShow?.action && Math.abs(x) >= minDistance && swipeToShow.action();
+    translateX.value = withTiming(0);
+    setSwipeToShow(null);
   };
 
   const panGesture = Gesture.Pan()
+    .minDistance(width / 6)
     .onUpdate(e => {
       const { translationX } = e;
       translateX.value = translationX;
       runOnJS(onPan)(translationX);
     })
-    .onEnd(() => {
-      runOnJS(onEnd)();
+    .onEnd(e => {
+      runOnJS(onEnd)(e.translationX);
     });
 
   const rStyle = useAnimatedStyle(() => {

@@ -117,7 +117,42 @@ export interface ISubredditPost {
     subreddit_subscribers: number;
     created_utc: number;
     num_crossposts: number;
-    media: null;
+    media: IMedia | null;
     is_video: boolean;
+    preview?: {
+      images: IImage[];
+      enabled: boolean;
+    };
+  };
+}
+
+interface IImage {
+  source: IImageProperties;
+  resolutions: IImageProperties[];
+  variants: {};
+  id: string;
+}
+interface IImageProperties {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface IMedia {
+  type: string;
+  oembed: {
+    provider_url: string;
+    version: string;
+    title: string;
+    type: string;
+    thumbnail_width: number;
+    height: number;
+    width: number;
+    html: string;
+    author_name: string;
+    provider_name: string;
+    thumbnail_url: string;
+    thumbnail_height: number;
+    author_url: string;
   };
 }

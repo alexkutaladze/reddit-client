@@ -1,7 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
-  subreddit: undefined;
+  search: undefined;
+  subreddit: { display_name: string };
   subredditPost: {
     permalink: string;
     title: string;
