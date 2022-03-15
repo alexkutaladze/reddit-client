@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ISubredditPost } from '../../api/subreddit/subreddit.types';
 import {
   Box,
@@ -13,7 +13,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { getPostAge } from '../../util/functions/post-age';
 import { formatScore } from '../../util/functions/format-score';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Dimensions, Linking } from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Linking,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import { Upvote, Downvote, Save, Reply, SwipeableView } from '../common';
 
 const { width, height } = Dimensions.get('window');
@@ -82,19 +88,84 @@ const Post = (props: Props) => {
     Linking.openURL(url);
   };
 
+  const displayAwards = useMemo(() => {
+    if (post.data.all_awardings.length === 0) return null;
+    const awards = post.data.all_awardings;
+
+    const [firstAward, ...rest] = awards;
+    console.log(firstAward);
+    const iconUrl =
+      firstAward?.resized_icons.length > 0
+        ? firstAward?.resized_icons[0].url
+        : firstAward?.icon_url;
+    return (
+      <HStack bg="dark.400" px={2} borderRadius="sm" alignItems={'center'}>
+        <Text fontSize={12}>{firstAward?.count}x </Text>
+        <Image
+          source={{ uri: iconUrl }}
+          height={4}
+          w={4}
+          alt={firstAward?.name}
+        />
+        {rest.length > 0 ? (
+          <Text fontSize={12}>
+            {' '}
+            & {rest.reduce((a, b) => a + b.count, 0)} more
+          </Text>
+        ) : null}
+      </HStack>
+    );
+  }, [post.data.all_awardings]);
+
+  const displayFlair = useMemo(() => {
+    if (!post.data.link_flair_text) return null;
+    return (
+      <Box
+        alignSelf={'flex-start'}
+        px={1}
+        borderRadius="sm"
+        bg={post.data.link_flair_background_color}>
+        <Text
+          fontSize={12}
+          color={
+            post.data.link_flair_text_color === 'light'
+              ? 'light.100'
+              : 'dark.100'
+          }>
+          {post.data.link_flair_text}
+        </Text>
+      </Box>
+    );
+  }, [
+    post.data.link_flair_background_color,
+    post.data.link_flair_text,
+    post.data.link_flair_text_color,
+  ]);
+
+  if (!post) return null;
+
   return (
     <SwipeableView left={left} right={right} minDistance={width / 10}>
       <Pressable onPress={handlePress}>
         <Box p={2} pb={0} bg="dark.100">
-          <HStack space={2} alignItems="center">
-            <Text fontSize={12} lineHeight={16} numberOfLines={1}>
-              {post.data.subreddit_name_prefixed} • u/{post.data.author} •{' '}
+          <HStack flexWrap={'wrap'} space={2} alignItems="center">
+            <Text fontSize={12} numberOfLines={1}>
+              {post.data.subreddit_name_prefixed} •{' '}
+              <Text
+                onPress={() => Alert.alert('show user')}
+                fontSize={12}
+                numberOfLines={1}>
+                u/{post.data.author}
+              </Text>
+              {' • '}
               {getPostAge(post.data.created)}
             </Text>
+            {displayAwards}
+            {displayFlair}
           </HStack>
-          <HStack>
+          <HStack pt={2}>
             <Box flex={3} pr={2}>
-              <Text pt={2} fontSize={16} lineHeight={20} numberOfLines={3}>
+              <Text fontSize={16} lineHeight={20} numberOfLines={3}>
                 {post.data.title}
               </Text>
             </Box>

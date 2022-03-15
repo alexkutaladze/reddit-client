@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useSubredditPosts from '../../api/subreddit';
 import { Box, Center } from 'native-base';
 import Post from '../../components/subreddit/post';
@@ -37,6 +37,11 @@ const Subreddit = (props: ScreenProps<'subreddit'>) => {
   useLayoutEffect(() => {
     navigation.setOptions({ title: display_name });
   }, [display_name, navigation]);
+
+  useEffect(() => {
+    if (sort !== 'top' || !timeRange) return;
+    refetch();
+  }, [timeRange, sort, refetch]);
 
   if (isLoading) {
     return (

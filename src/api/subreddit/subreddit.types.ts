@@ -23,7 +23,7 @@ export interface ISubredditPost {
     gilded: number;
     clicked: boolean;
     title: string;
-    link_flair_richtext: [];
+    link_flair_richtext: ILinkFlair[];
     subreddit_name_prefixed: string;
     hidden: boolean;
     pwls: number;
@@ -81,7 +81,7 @@ export interface ISubredditPost {
     is_crosspostable: boolean;
     pinned: boolean;
     over_18: boolean;
-    all_awardings: [];
+    all_awardings: IAwarding[];
     awarders: [];
     media_only: boolean;
     can_gild: boolean;
@@ -97,7 +97,7 @@ export interface ISubredditPost {
     author_is_blocked: boolean;
     mod_reason_by: null;
     removal_reason: null;
-    link_flair_background_color: '';
+    link_flair_background_color: string;
     id: string;
     is_robot_indexable: boolean;
     report_reasons: null;
@@ -124,6 +124,58 @@ export interface ISubredditPost {
       enabled: boolean;
     };
   };
+  gallery_data?: IGalleryData;
+  media_metadata?: IMediaMetadata;
+}
+
+interface IGalleryData {
+  items: {
+    media_id: string;
+    id: number;
+  }[];
+}
+
+interface IMediaMetadata {
+  [name: string]: {
+    status: string;
+    e: string;
+    m: string;
+    p: {
+      x: number;
+      y: number;
+      u: string;
+    }[];
+    s: {
+      x: number;
+      y: number;
+      u: string;
+    };
+    id: string;
+  };
+}
+
+interface ILinkFlair {
+  e: string;
+  t: string;
+}
+
+interface IAwarding {
+  coin_price: number;
+  id: string;
+  icon_url: string;
+  resized_icons: IResizedAwardIcon[];
+  icon_width: number;
+  icon_height: number;
+  is_enabled: boolean;
+  description: string;
+  count: number;
+  name: string;
+}
+
+interface IResizedAwardIcon {
+  url: string;
+  width: number;
+  height: number;
 }
 
 interface IImage {

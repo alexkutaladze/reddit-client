@@ -8,7 +8,7 @@ export const getSubredditPosts = async (
   t?: Time,
 ) => {
   const { data } = await axios.get(
-    `r/${subreddit}/${sortBy}.json${t ? `?t=${t}` : ''}`,
+    `r/${subreddit}/${sortBy}.json?raw_json=1${t ? `&t=${t}` : ''}`,
   );
 
   return data;
