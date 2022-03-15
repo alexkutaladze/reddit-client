@@ -1,4 +1,9 @@
-import { Dimensions, LayoutAnimation, TouchableOpacity } from 'react-native';
+import {
+  Dimensions,
+  LayoutAnimation,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React, { useMemo, useState } from 'react';
 import { Box, Divider, HStack, Spacer, Text } from 'native-base';
 import RenderHTML from 'react-native-render-html';
@@ -50,7 +55,7 @@ const Comment = (props: Props) => {
             <Icon name="arrow-up" color="orange" />
             <Text pl={1}>{comment.data.score}</Text>
           </HStack>
-          <Text fontSize={14}>{comment.data.body}</Text>
+          <CommentBody html={comment.data.body_html} />
           <Divider mt={2} />
         </Box>
         {!collapsed &&
@@ -69,14 +74,24 @@ interface CommentBodyProps {
 
 const CommentBody = (props: CommentBodyProps) => {
   const { html } = props;
-  const source = { html };
-  return (
-    <RenderHTML
-      source={source}
-      baseStyle={{ fontSize: 16, color: 'white' }}
-      contentWidth={width}
-    />
+
+  return useMemo(
+    () => (
+      <RenderHTML
+        source={{ html }}
+        baseStyle={styles.html}
+        contentWidth={width}
+      />
+    ),
+    [html],
   );
 };
 
 export default Comment;
+
+const styles = StyleSheet.create({
+  html: {
+    fontSize: 14,
+    color: 'white',
+  },
+});

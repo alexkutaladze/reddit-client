@@ -1,6 +1,6 @@
 import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { useSubredditPosts } from '../../api/subreddit';
+import useSubredditPosts from '../../api/subreddit';
 import { Box, Center } from 'native-base';
 import Post from '../../components/subreddit/post';
 import SortSegment from '../../components/subreddit/sort-segment';
@@ -10,16 +10,21 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
+import { Time } from '../../api/subreddit/subreddit.api';
 
 const AnimatedFlatlist = Animated.createAnimatedComponent(FlatList);
 
 const Subreddit = (props: ScreenProps<'subreddit'>) => {
   const { navigation, route } = props;
   const { display_name } = route.params;
+
   const [sort, setSort] = useState('new');
+  const [timeRange, setTimeRange] = useState<Time>();
+
   const { data, isLoading, isRefetching, refetch } = useSubredditPosts(
     display_name,
     sort,
+    timeRange,
   );
   const flatRef = useRef<FlatList<any>>();
   const scrollY = useSharedValue(0);
@@ -43,7 +48,7 @@ const Subreddit = (props: ScreenProps<'subreddit'>) => {
 
   return (
     <Box flex={1} bg="dark.100">
-      <SortSegment setSort={setSort} />
+      <SortSegment sort={sort} setSort={setSort} setTimeRange={setTimeRange} />
       <AnimatedFlatlist
         onScroll={scrollHandler}
         // @ts-ignore

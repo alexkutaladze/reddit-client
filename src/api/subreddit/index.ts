@@ -1,1 +1,3 @@
-export { default as useSubredditPosts } from './subreddit.hook';
+import useSubredditPosts from './subreddit.hook';
+
+export default useSubredditPosts;

@@ -7,6 +7,7 @@ export const getPostAge = (post_creation_date: number) => {
   return formatDistanceStrict(today, postDate)
     .replace(/ second[s]?/, 's')
     .replace(/ minute[s]?/, 'm')
+    .replace(/ month[s]?/, 'mo')
     .replace(/ hour[s]?/, 'h')
     .replace(/ day[s]?/, 'd')
     .replace(/ year[s]?/, 'y');
